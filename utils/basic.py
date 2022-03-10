@@ -3,6 +3,13 @@ import os
 from datetime import datetime
 
 
+def get_real_name(user_id):
+    id_name_dict = {}
+    chinese = id_name_dict.get(user_id, {}).get('chinese', '')
+    pinyin = id_name_dict.get(user_id, {}).get('pinyin', '')
+    return '  mmmmm  '.join([str(i) for i in [user_id, chinese, pinyin]])
+
+
 def read_local_file(file_today: str) -> dict:
     """
     only get data once every day, read data after get data from api
@@ -35,7 +42,6 @@ def write_local_file(file_today: str, data) -> None:
             f.write(data)
 
 
-
 def is_today_file_exist(file_today: str) -> bool:
     """
     check whether today_in_history-*.json file exist.
@@ -59,6 +65,3 @@ def gen_today_file_name(template) -> str:
     now = datetime.now().strftime('%m-%d')
     file_today: str = template % now
     return file_today
-
-
-
