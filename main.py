@@ -1,4 +1,15 @@
 # -*- coding: utf-8 -*-
+"""
+voice message
+b'<xml><ToUserName><![CDATA[gh_52f70b25a9b5]]></ToUserName>\n<FromUserName><![CDATA[oJo_v06K5xUTXXGoKSCpBVHrHKmM]]></FromUserName>\n<CreateTime>1646914232</CreateTime>\n<MsgType><![CDATA[voice]]></MsgType>\n<MediaId><![CDATA[-bRr-dLVIZvuqjP4J3xaQJcwwnfKrAJon9CidqIP9vc53AfIXgA7r0YTSfDaPyaZ]]></MediaId>\n<Format><![CDATA[amr]]></Format>\n<MsgId>23578144969699076</MsgId>\n<Recognition><![CDATA[]]></Recognition>\n</xml>'
+
+image message
+b'<xml><ToUserName><![CDATA[gh_52f70b25a9b5]]></ToUserName>\n<FromUserName><![CDATA[oJo_v06K5xUTXXGoKSCpBVHrHKmM]]></FromUserName>\n<CreateTime>1646914714</CreateTime>\n<MsgType><![CDATA[image]]></MsgType>\n<PicUrl><![CDATA[http://mmbiz.qpic.cn/mmbiz_jpg/4q4d8FsN3E15G6wPSiaqdib9bMVu6ia1W6HF9iaAiau2omq9NBRpo76vPOhUIbmiarhPxq9sTqgkIyQWsFCrxWk2KXQg/0]]></PicUrl>\n<MsgId>23578149529141267</MsgId>\n<MediaId><![CDATA[MR-2EQSUZZmzWvLXfoOK5YDYqSv3Ua5P_M5trcw2tcpURGddrQmqldk-5ClyddBL]]></MediaId>\n</xml>'
+http://mmbiz.qpic.cn/mmbiz_jpg/4q4d8FsN3E15G6wPSiaqdib9bMVu6ia1W6HF9iaAiau2omq9NBRpo76vPOhUIbmiarhPxq9sTqgkIyQWsFCrxWk2KXQg/0
+
+
+"""
+
 import os
 
 import xmltodict
@@ -18,6 +29,7 @@ from utils.today_in_history import today_in_history
 from utils.translate import translate
 from utils.logger import logger
 from utils.first_message import first_message
+from utils.basic import get_real_name
 
 # here to set your custom token, e.g.: abcde
 TOKEN = os.getenv("WECHAT_TOKEN", "")
@@ -69,10 +81,21 @@ def wechat():
             return reply.render()
 
         if msg.type == "text":
-            reply = replay_message(msg, from_user_name)
+            reply = reply_text_msg(msg, from_user_name)
+            username = get_real_name(from_user_name)
+            logger.info(username + '  mmmmm  ' + str(msg).strip())
+        elif msg.type == 'voice':
+            message = xmltodict.parse(to_text(request.data))['xml']
+            recognition = message['Recognition']
+            logger.info('Recognition: ' + str(recognition))
+            username = get_real_name(from_user_name)
+            logger.info(username + '  mmmmm  ' + str(recognition).strip())
+
+            reply = reply_voice_msg(msg, from_user_name, str(recognition))
         else:
             reply = create_reply("Sorry, can not handle this for now.", msg)
         return reply.render()
+        # return reply
     else:
         # encryption mode
         from wechatpy.crypto import WeChatCrypto
@@ -102,7 +125,7 @@ def extract_field_from_request_data():
     msg = parse_message(request.data)
     logger.info('msg')
     logger.info('msg type: ' + str(type(msg)))
-    logger.info('msg content: ', msg)
+    logger.info('msg content: ' + str(msg))
 
     return from_user_name, message, message_type, msg
 
@@ -121,27 +144,60 @@ def is_subscribe(message, message_type):
             return False
 
 
-def replay_message(msg, user):
-    content: str = msg.content.strip()
-    logger.info('in replay message')
-    logger.info('content type: ' + str(type(content)))
-    logger.info('content: ' + content)
-    result = map_keyword_to_func(content, user)
+def reply_voice_msg(msg, user, content):
+    logger.info('voice mode, in replay message')
+    logger.info('voice mode, content type: ' + str(type(content)))
+    logger.info('voice mode, content: ' + str(content))
+    result = map_voice_keyword_to_func(content, user)
+
     reply = create_reply(result, msg)
     return reply
 
 
-def map_keyword_to_func(content, user):
+def reply_text_msg(msg, user):
+    content: str = msg.content.strip()
+    logger.info('text mode, in replay message')
+    logger.info('text mode, content type: ' + str(type(content)))
+    logger.info('text mode, content: ' + content)
+    result = map_text_keyword_to_func(content, user)
+
+    reply = create_reply(result, msg)
+    return reply
+
+
+def map_voice_keyword_to_func(content, user):
     if not content:
         return ''
 
-    keyword = content.split()[0]
+    voice_keywords = {
+        '新闻': get_news_60s,
+        'news': get_news_60s,
+        'history': today_in_history,
+        '历史': today_in_history,
+        '冰墩墩': bingdwendwen
+    }
+    for k, v in voice_keywords.items():
+        if k in content.lower():
+            result = v()
+            logger.info('voice mode, result')
+            logger.info('voice mode, result type: ' + str(type(result)))
+            logger.info('voice mode, result content: ' + str(result))
+            return str(result)
+    return ''
+
+
+def map_text_keyword_to_func(content, user):
+    if not content:
+        return ''
+
+    keyword = content.split()[0].replace('。', '')
 
     keyword_action_dict = {
         '历史': {'func': today_in_history, 'param': ''},
         'history': {'func': today_in_history, 'param': ''},
         '冰墩墩': {'func': bingdwendwen, 'param': ''},
         '新闻': {'func': get_news_60s, 'param': ''},
+        'news': {'func': get_news_60s, 'param': ''},
         '翻译': {'func': translate, 'param': (content,)},
         'translate': {'func': translate, 'param': (content,)},
         '计算': {'func': calc, 'param': (content, user)},
@@ -149,8 +205,8 @@ def map_keyword_to_func(content, user):
     }
     func = keyword_action_dict.get(keyword, {}).get('func', '')
     param = keyword_action_dict.get(keyword, {}).get('param', '')
-    logger.info('execute function: ' + str(func))
-    logger.info('params: ' + str(param))
+    logger.info('text mode, execute function: ' + str(func))
+    logger.info('text mode, params: ' + str(param))
 
     if not func:
         return ''
@@ -160,9 +216,9 @@ def map_keyword_to_func(content, user):
     else:
         result = func()
     result = str(result)
-    logger.info('result')
-    logger.info('result type: ' + str(type(result)))
-    logger.info('result content: ' + result)
+    logger.info('text mode, result')
+    logger.info('text mode, result type: ' + str(type(result)))
+    logger.info('text mode, result content: ' + str(result))
     return result
 
 
