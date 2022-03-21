@@ -13,15 +13,18 @@ def query(word: str) -> str:
     Returns:
         chinese meaning for words.
     """
-    url = 'https://dict.youdao.com/jsonapi?q=%s' % word
+    url = "https://dict.youdao.com/jsonapi?q=%s" % word
 
     response: str = requests.get(url).text
     words: dict = json.loads(response)
 
     try:
-        chinese: str = words.get(
-            'web_trans', {}).get('web-translation', [])[0].get(
-            'trans', [])[0].get('value', '')
+        chinese: str = (
+            words.get("web_trans", {})
+            .get("web-translation", [])[0]
+            .get("trans", [])[0]
+            .get("value", "")
+        )
     except IndexError:
         # Please input english word, for example: "translation hello"
         chinese: str = '请输入英文, 例如 "翻译 hello"'
@@ -38,6 +41,6 @@ def translate(words):
         return '请输入 "翻译 hello"'
 
 
-if __name__ == '__main__':
-    result = translate("translate hello")
-    print(result)
+if __name__ == "__main__":
+    r = translate("translate hello")
+    print(r)

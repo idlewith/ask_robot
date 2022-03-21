@@ -4,10 +4,10 @@ from utils import logger
 
 def format_output(result):
     expr_str = str(result)
-    if '.' in expr_str:
-        suffix = expr_str.split('.')[1]
+    if "." in expr_str:
+        suffix = expr_str.split(".")[1]
         if len(suffix) > 2:
-            return '%.5f' % result
+            return "%.5f" % result
         else:
             return str(result)
     else:
@@ -22,29 +22,26 @@ def has_permission(user):
 
 
 def calc(string, user):
-    logger.logger.info('calc string: ' + str(string))
-    logger.logger.info('user: ' + str(user))
+    logger.logger.info("calc string: " + str(string))
+    logger.logger.info("user: " + str(user))
 
     if len(string.split()) <= 1:
-        # no expression
-        return '没有表达式'
+        return "没有表达式"  # no expression
 
-    # remove permission at moment, 先移除权限校验，估计要几年后才能添加了
+    # remove permission at the moment, 先移除权限校验，估计要几年后才能添加了
     if has_permission(user):
-        # not paid
-        return '不在允许请求的范围内'
+        return "不在允许请求的范围内"  # not paid
 
-    expression = ' '.join(string.split()[1:])
+    expression = " ".join(string.split()[1:])
     try:
-        result = eval(expression)
-        result = format_output(result)
+        eval_expr = eval(expression)
+        result = format_output(eval_expr)
+        return result
     except (SyntaxError, TypeError):
-        # expression has error
-        result = '表达式不正确'
-    return result
+        return "表达式不正确"  # expression has error
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # result = calc('calculate 469/6%3/8646/3%6')
-    result = calc('计算 469/6%3/8646/3%6', 'ojo_v06k5xutxxgokscpbvhrhkmm')
-    print(result)
+    r = calc("计算 469/6%3/8646/3%6", "")
+    print(r)

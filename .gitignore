@@ -1,6 +1,7 @@
 .idea/
 __pycache__/
 t.py
+t1.py
 today_in_history*.json
 nohup.out
 .DS_Store
