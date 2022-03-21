@@ -1,4 +1,5 @@
 import json
+from pprint import pprint
 
 import requests
 
@@ -19,12 +20,14 @@ def query(word: str) -> str:
     words: dict = json.loads(response)
 
     try:
-        chinese: str = (
-            words.get("web_trans", {})
-            .get("web-translation", [])[0]
-            .get("trans", [])[0]
-            .get("value", "")
+        trans = (
+            words.get("web_trans", {}).get("web-translation", [])[0].get("trans", [])
         )
+        chinese_list = []
+        for tran in trans:
+            value = tran.get("value", "")
+            chinese_list.append(value)
+        chinese = ", ".join(chinese_list)
     except IndexError:
         # Please input english word, for example: "translation hello"
         chinese: str = '请输入英文, 例如 "翻译 hello"'
@@ -43,4 +46,4 @@ def translate(words):
 
 if __name__ == "__main__":
     r = translate("translate hello")
-    print(r)
+    pprint(r)
