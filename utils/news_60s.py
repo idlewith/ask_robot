@@ -116,7 +116,11 @@ def cut_limit_whole_line(data):
 
         limit_str = "\n\n".join(limit_list)
         if len(limit_str) > 750:
-            return "\n\n".join(limit_list[:-1])
+            limit_str_two = "\n\n".join(limit_list[:-1])
+            if len(limit_str_two) > 650:
+                return "\n\n".join(limit_list[:-2])
+            else:
+                return limit_str_two
         else:
             limit_list.append(row)
 

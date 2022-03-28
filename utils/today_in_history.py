@@ -54,6 +54,7 @@ def get_data() -> dict:
 
 
 def today_in_history():
+
     file_today = gen_today_file_name("today_in_history-%s.json")
     today_file_exist = is_today_file_exist(file_today)
 
