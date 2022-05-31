@@ -13,3 +13,4 @@ push/client.py
 *.txt
 *.db
 *.pclprof
+config.py
