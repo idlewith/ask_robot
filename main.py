@@ -26,6 +26,7 @@ from utils.bingdwendwen import bingdwendwen
 from utils.calculate import calc
 from utils.news_60s import get_news_60s
 from utils.today_in_history import today_in_history
+from utils.paopao import bubble
 from utils.translate import translate
 from utils.logger import logger
 from utils.first_message import first_message
@@ -35,20 +36,24 @@ from utils.basic import get_real_name
 TOKEN = os.getenv("WECHAT_TOKEN", "")
 AES_KEY = os.getenv("WECHAT_AES_KEY", "")
 APPID = os.getenv("WECHAT_APPID", "")
+KEYWORD_TODO = 'todo'
+KEYWORD_TEXT = 'text'
+KEYWORD_VOICE = 'voice'
+KEYWORD_CHINESE = ['记录', '展示']
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    return 'index'
+    return "index"
     # host = request.url_root
     # return render_template("index.html", host=host)
 
 
 @app.route("/wx", methods=["GET", "POST"])
 def wechat():
-    logger.info('request: ' + str(request))
+    logger.info("request: " + str(request))
     signature = request.args.get("signature", "")
     timestamp = request.args.get("timestamp", "")
     nonce = request.args.get("nonce", "")
@@ -57,7 +62,7 @@ def wechat():
 
     try:
         check_signature(TOKEN, signature, timestamp, nonce)
-        logger.info('token: ' + TOKEN)
+        logger.info("token: " + TOKEN)
     except InvalidSignatureException:
         abort(403)
 
@@ -68,9 +73,9 @@ def wechat():
     # POST request
     elif encrypt_type == "raw":
         # plaintext mode
-        logger.info('request.data')
-        logger.info('request.data type: ' + str(type(request.data)))
-        logger.info('request.data content: ' + str(request.data))
+        logger.info("request.data")
+        logger.info("request.data type: " + str(type(request.data)))
+        logger.info("request.data content: " + str(request.data))
 
         from_user_name, message, message_type, msg = extract_field_from_request_data()
 
@@ -83,13 +88,29 @@ def wechat():
         if msg.type == "text":
             reply = reply_text_msg(msg, from_user_name)
             username = get_real_name(from_user_name)
-            logger.info(username + '  mmmmm  ' + str(msg).strip())
-        elif msg.type == 'voice':
-            message = xmltodict.parse(to_text(request.data))['xml']
-            recognition = message['Recognition']
-            logger.info('Recognition: ' + str(recognition))
+            msg_strip = str(msg).strip()
+            for keyword_chinese in KEYWORD_CHINESE:
+                if keyword_chinese in msg_strip:
+                    log_msg = '---'.join([KEYWORD_TODO, KEYWORD_TEXT, username, msg_strip])
+                    logger.info(log_msg)
+
+            log_msg = '---'.join([username, msg_strip])
+            logger.info(log_msg)
+
+        elif msg.type == "voice":
+            message = xmltodict.parse(to_text(request.data))["xml"]
+            recognition = message["Recognition"]
+            msg_strip = str(recognition).strip()
             username = get_real_name(from_user_name)
-            logger.info(username + '  mmmmm  ' + str(recognition).strip())
+            logger.info("Recognition: " + msg_strip)
+
+            for keyword_chinese in KEYWORD_CHINESE:
+                if keyword_chinese in msg_strip:
+                    log_msg = '---'.join([KEYWORD_TODO, KEYWORD_VOICE, username, msg_strip])
+                    logger.info(log_msg)
+
+            log_msg = '---'.join([username, msg_strip])
+            logger.info(log_msg)
 
             reply = reply_voice_msg(msg, from_user_name, str(recognition))
         else:
@@ -115,39 +136,39 @@ def wechat():
 
 
 def extract_field_from_request_data():
-    message = xmltodict.parse(to_text(request.data))['xml']
-    from_user_name = message['FromUserName']
-    logger.info('FromUserName: ' + str(from_user_name))
+    message = xmltodict.parse(to_text(request.data))["xml"]
+    from_user_name = message["FromUserName"]
+    logger.info("FromUserName: " + str(from_user_name))
 
-    message_type = message['MsgType'].lower()
-    logger.info('MsgType: ' + str(message_type))
+    message_type = message["MsgType"].lower()
+    logger.info("MsgType: " + str(message_type))
 
     msg = parse_message(request.data)
-    logger.info('msg')
-    logger.info('msg type: ' + str(type(msg)))
-    logger.info('msg content: ' + str(msg))
+    logger.info("msg")
+    logger.info("msg type: " + str(type(msg)))
+    logger.info("msg content: " + str(msg))
 
     return from_user_name, message, message_type, msg
 
 
 def is_subscribe(message, message_type):
-    if message_type == 'event' or message_type.startswith('device_'):
-        if 'Event' in message:
-            logger.info('event in message')
-            event_type = message['Event'].lower()
+    if message_type == "event" or message_type.startswith("device_"):
+        if "Event" in message:
+            logger.info("event in message")
+            event_type = message["Event"].lower()
         else:
-            event_type = ''
+            event_type = ""
 
-        if event_type == 'subscribe':
+        if event_type == "subscribe":
             return True
         else:
             return False
 
 
 def reply_voice_msg(msg, user, content):
-    logger.info('voice mode, in replay message')
-    logger.info('voice mode, content type: ' + str(type(content)))
-    logger.info('voice mode, content: ' + str(content))
+    logger.info("voice mode, in replay message")
+    logger.info("voice mode, content type: " + str(type(content)))
+    logger.info("voice mode, content: " + str(content))
     result = map_voice_keyword_to_func(content, user)
 
     reply = create_reply(result, msg)
@@ -156,10 +177,18 @@ def reply_voice_msg(msg, user, content):
 
 def reply_text_msg(msg, user):
     content: str = msg.content.strip()
-    logger.info('text mode, in replay message')
-    logger.info('text mode, content type: ' + str(type(content)))
-    logger.info('text mode, content: ' + content)
+    logger.info("text mode, in replay message")
+    logger.info("text mode, content type: " + str(type(content)))
+    logger.info("text mode, content: " + content)
     result = map_text_keyword_to_func(content, user)
+
+    # todo reply image
+    if '冰墩墩' in content:
+        image_reply = ImageReply()
+        image_reply.media_id = 'CVE-AgGLEVfYepyn0TvydL3F1XLB81xelAgesq7gd6-muClBXq0K2IHbKk8g-6aN'
+        reply = create_reply(image_reply, msg)
+        logger.info('image: ' + str(reply))
+        return reply
 
     reply = create_reply(result, msg)
     return reply
@@ -167,58 +196,59 @@ def reply_text_msg(msg, user):
 
 def map_voice_keyword_to_func(content, user):
     if not content:
-        return ''
+        return ""
 
     voice_keywords = {
-        '新闻': get_news_60s,
-        'news': get_news_60s,
-        'history': today_in_history,
-        '历史': today_in_history,
-        '冰墩墩': bingdwendwen
+        "新闻": get_news_60s,
+        "news": get_news_60s,
+        "history": today_in_history,
+        "历史": today_in_history,
+        "冰墩墩": bingdwendwen,
     }
     for k, v in voice_keywords.items():
         if k in content.lower():
             result = v()
-            logger.info('voice mode, result')
-            logger.info('voice mode, result type: ' + str(type(result)))
-            logger.info('voice mode, result content: ' + str(result))
+            logger.info("voice mode, result")
+            logger.info("voice mode, result type: " + str(type(result)))
+            logger.info("voice mode, result content: " + str(result))
             return str(result)
-    return ''
+    return ""
 
 
 def map_text_keyword_to_func(content, user):
     if not content:
-        return ''
+        return ""
 
-    keyword = content.split()[0].replace('。', '')
+    keyword = content.split()[0].replace("。", "")
 
     keyword_action_dict = {
-        '历史': {'func': today_in_history, 'param': ''},
-        'history': {'func': today_in_history, 'param': ''},
-        '冰墩墩': {'func': bingdwendwen, 'param': ''},
-        '新闻': {'func': get_news_60s, 'param': ''},
-        'news': {'func': get_news_60s, 'param': ''},
-        '翻译': {'func': translate, 'param': (content,)},
-        'translate': {'func': translate, 'param': (content,)},
-        '计算': {'func': calc, 'param': (content, user)},
-        'calc': {'func': calc, 'param': (content, user)},
+        "历史": {"func": today_in_history, "param": ""},
+        "history": {"func": today_in_history, "param": ""},
+        "冰墩墩": {"func": bingdwendwen, "param": ""},
+        # "泡泡": {"func": bubble, "param": ""},
+        "新闻": {"func": get_news_60s, "param": ""},
+        "news": {"func": get_news_60s, "param": ""},
+        "翻译": {"func": translate, "param": (content,)},
+        "translate": {"func": translate, "param": (content,)},
+        "计算": {"func": calc, "param": (content, user)},
+        "calc": {"func": calc, "param": (content, user)},
     }
-    func = keyword_action_dict.get(keyword, {}).get('func', '')
-    param = keyword_action_dict.get(keyword, {}).get('param', '')
-    logger.info('text mode, execute function: ' + str(func))
-    logger.info('text mode, params: ' + str(param))
+    func = keyword_action_dict.get(keyword, {}).get("func", "")
+    param = keyword_action_dict.get(keyword, {}).get("param", "")
+    logger.info("text mode, execute function: " + str(func))
+    logger.info("text mode, params: " + str(param))
 
     if not func:
-        return ''
+        return ""
 
     if param:
         result = func(*param)
     else:
         result = func()
     result = str(result)
-    logger.info('text mode, result')
-    logger.info('text mode, result type: ' + str(type(result)))
-    logger.info('text mode, result content: ' + str(result))
+    logger.info("text mode, result")
+    logger.info("text mode, result type: " + str(type(result)))
+    logger.info("text mode, result content: " + str(result))
     return result
 
 

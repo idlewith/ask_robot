@@ -5,6 +5,7 @@ from typing import Union, Any
 
 
 def get_real_name(user_id):
+    return user_id
     id_name_dict = {}
     chinese = id_name_dict.get(user_id, {}).get("chinese", "")
     pinyin = id_name_dict.get(user_id, {}).get("pinyin", "")
