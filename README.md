@@ -1,6 +1,48 @@
 
+# todo
+
+- [ ] do not need config.py, using environment in restart.sh
+
+WECHAT_TOKEN
+WECHAT_AES_KEY
+WECHAT_APPID
+PASSWORD_EMAIL
+PASSWORD_IMAGE
+PASSWORD_IMAGE_ID
+
+- [ ] modify log path and create various path automatically
+/opt/idlepig/apps/python397
+/opt/idlepig/apps/code/wx
+/opt/idlepig/logs
+
+
+
+~~image upload, the image path need to dynamic~~
+
+~~if config.py is empty, need catch error~~
+
 
 # install python
+
+
+## build from source
+
+```shell
+wget https://www.python.org/ftp/python/3.9.7/Python-3.9.7.tar.xz
+tar -xzvf Python-3.9.7.tar.xz
+
+cd Python-3.9.7
+./configure --prefix=/opt/idlepig/apps/python397
+make
+make altinstall
+
+cd ~/code/venv
+/opt/idlepig/apps/python397/bin/python3.9 -m venv wx
+source ~/code/venv/wx/bin/activate
+
+cd ~/code/wx
+pip install -r requirements.txt
+```
 
 
 ## create environment

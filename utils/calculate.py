@@ -21,7 +21,7 @@ def has_permission(user):
         return False
 
 
-def calc(string, user):
+def calc(string: str, user):
     logger.logger.info("calc string: " + str(string))
     logger.logger.info("user: " + str(user))
 

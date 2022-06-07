@@ -36,10 +36,10 @@ from utils.basic import get_real_name
 TOKEN = os.getenv("WECHAT_TOKEN", "")
 AES_KEY = os.getenv("WECHAT_AES_KEY", "")
 APPID = os.getenv("WECHAT_APPID", "")
-KEYWORD_TODO = 'todo'
-KEYWORD_TEXT = 'text'
-KEYWORD_VOICE = 'voice'
-KEYWORD_CHINESE = ['记录', '展示']
+KEYWORD_TODO = "todo"
+KEYWORD_TEXT = "text"
+KEYWORD_VOICE = "voice"
+KEYWORD_CHINESE = ["记录", "展示"]
 
 app = Flask(__name__)
 
@@ -91,10 +91,12 @@ def wechat():
             msg_strip = str(msg).strip()
             for keyword_chinese in KEYWORD_CHINESE:
                 if keyword_chinese in msg_strip:
-                    log_msg = '---'.join([KEYWORD_TODO, KEYWORD_TEXT, username, msg_strip])
+                    log_msg = "---".join(
+                        [KEYWORD_TODO, KEYWORD_TEXT, username, msg_strip]
+                    )
                     logger.info(log_msg)
 
-            log_msg = '---'.join([username, msg_strip])
+            log_msg = "---".join([username, msg_strip])
             logger.info(log_msg)
 
         elif msg.type == "voice":
@@ -106,10 +108,12 @@ def wechat():
 
             for keyword_chinese in KEYWORD_CHINESE:
                 if keyword_chinese in msg_strip:
-                    log_msg = '---'.join([KEYWORD_TODO, KEYWORD_VOICE, username, msg_strip])
+                    log_msg = "---".join(
+                        [KEYWORD_TODO, KEYWORD_VOICE, username, msg_strip]
+                    )
                     logger.info(log_msg)
 
-            log_msg = '---'.join([username, msg_strip])
+            log_msg = "---".join([username, msg_strip])
             logger.info(log_msg)
 
             reply = reply_voice_msg(msg, from_user_name, str(recognition))
@@ -183,11 +187,13 @@ def reply_text_msg(msg, user):
     result = map_text_keyword_to_func(content, user)
 
     # todo reply image
-    if '冰墩墩' in content:
+    if "冰墩墩" in content:
         image_reply = ImageReply()
-        image_reply.media_id = 'CVE-AgGLEVfYepyn0TvydL3F1XLB81xelAgesq7gd6-muClBXq0K2IHbKk8g-6aN'
+        image_reply.media_id = (
+            "CVE-AgGLEVfYepyn0TvydL3F1XLB81xelAgesq7gd6-muClBXq0K2IHbKk8g-6aN"
+        )
         reply = create_reply(image_reply, msg)
-        logger.info('image: ' + str(reply))
+        logger.info("image: " + str(reply))
         return reply
 
     reply = create_reply(result, msg)
@@ -196,7 +202,7 @@ def reply_text_msg(msg, user):
 
 def map_voice_keyword_to_func(content, user):
     if not content:
-        return ""
+        return " "
 
     voice_keywords = {
         "新闻": get_news_60s,

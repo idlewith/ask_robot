@@ -14,3 +14,7 @@ push/client.py
 *.db
 *.pclprof
 config.py
+test_t.py
+downloads
+downloads.tar.gz
+restart_local.sh
