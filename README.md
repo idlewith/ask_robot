@@ -1,6 +1,15 @@
 
 # todo
 
+**main todo**
+
+- [ ] total background python process
+- [ ] docs for people connect wechat official account, step by step
+- [ ] website manage every functions edited by python 
+
+
+**other todo**
+
 - [ ] do not need config.py, using environment in restart.sh
 
 WECHAT_TOKEN
@@ -141,6 +150,8 @@ nginx
 # for WeChat platform
 
 [article_for_wx.py](article_for_wx.py) has chinese comment is only for WeChat platform
+
+这个脚本是微信公众号里面都脚本文件
 
 # logs file location
 
