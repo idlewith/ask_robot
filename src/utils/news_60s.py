@@ -5,13 +5,13 @@ import bs4
 import requests
 from bs4 import BeautifulSoup
 
-from utils.basic import (
+from basic import (
     gen_today_file_name,
     is_today_file_exist,
     read_local_file,
     write_local_file,
 )
-from utils import logger
+import logger
 
 
 def get_month_day():

@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from utils.basic import (
+from basic import (
     gen_today_file_name,
     is_today_file_exist,
     read_local_file,

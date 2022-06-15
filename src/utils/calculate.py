@@ -1,5 +1,4 @@
-import config
-from utils import logger
+import logger
 
 
 def format_output(result):
@@ -15,10 +14,7 @@ def format_output(result):
 
 
 def has_permission(user):
-    if user in config.calc_permission_list:
-        return True
-    else:
-        return False
+    raise NotImplementedError
 
 
 def calc(string: str, user):

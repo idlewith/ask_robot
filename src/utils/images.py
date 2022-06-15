@@ -1,8 +1,7 @@
 import json
+import os
 
 import requests
-
-import config
 
 
 def request_download(img_url, img_save_path):
@@ -27,7 +26,9 @@ def get_access_token(appid, secret):
 
 def img_upload(mediaType, name):
 
-    token = get_access_token(config.app_id, config.secret)
+    app_id = os.getenv('IMAGE_ID', '')
+    secret = os.getenv('IMAGE_PASSWORD', '')
+    token = get_access_token(app_id, secret)
     url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=%s&type=%s" % (token, mediaType)
     img_path = '/root/code/tmp/b.png'
     request_download('https://idlepig.coding.net/p/image/d/image/git/raw/master/1654018765795.png', img_path)
