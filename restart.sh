@@ -1,8 +1,8 @@
 pid=`netstat -lnput|grep 8081|awk -F ' ' '{print $7}'|awk -F '/' '{print $1}'`
 
-export PASSWORD_EMAIL=''
-export PASSWORD_IMAGE=''
-export PASSWORD_IMAGE_ID=''
+export EMAIL_PASSWORD =''
+export IMAGE_PASSWORD =''
+export IMAGE_ID=''
 
 kill -9 $pid
 
