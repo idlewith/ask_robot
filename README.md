@@ -8,7 +8,7 @@
 - [ ] website manage every functions edited by python 
 
 
-**other todo**
+**others todo**
 
 - [ ] do not need config.py, using environment in restart.sh
 
