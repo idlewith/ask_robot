@@ -1,0 +1,8 @@
+__title__ = "ask_robot"
+__description__ = "a robot for wechat official platform"
+__url__ = ""
+__version__ = "0.0.1"
+__author__ = "idlewith"
+__author_email__ = "newellzhou@163.com"
+__license__ = "MIT"
+__copyright__ = "Copyright 2022 idlewith"

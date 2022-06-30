@@ -1,10 +1,11 @@
-import logger
+from . import logger
 
 
 def format_output(result):
     expr_str = str(result)
     if "." in expr_str:
-        suffix = expr_str.split(".")[1]
+        split = expr_str.split(".")
+        suffix = split[1]
         if len(suffix) > 2:
             return "%.5f" % result
         else:
@@ -14,7 +15,8 @@ def format_output(result):
 
 
 def has_permission(user):
-    raise NotImplementedError
+    return False
+    # raise NotImplementedError
 
 
 def calc(string: str, user):

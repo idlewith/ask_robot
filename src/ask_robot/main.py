@@ -33,9 +33,9 @@ from utils.first_message import first_message
 from utils.basic import get_real_name
 
 # here to set your custom token, e.g.: abcde
-TOKEN = os.getenv("WECHAT_TOKEN", "")
-AES_KEY = os.getenv("WECHAT_AES_KEY", "")
-APPID = os.getenv("WECHAT_APPID", "")
+TOKEN = os.getenv("token", "")
+AES_KEY = os.getenv("aes_key", "")
+APPID = os.getenv("app_id", "")
 KEYWORD_TODO = "todo"
 KEYWORD_TEXT = "text"
 KEYWORD_VOICE = "voice"
@@ -187,14 +187,14 @@ def reply_text_msg(msg, user):
     result = map_text_keyword_to_func(content, user)
 
     # todo reply image
-    if "冰墩墩" in content:
-        image_reply = ImageReply()
-        image_reply.media_id = (
-            "CVE-AgGLEVfYepyn0TvydL3F1XLB81xelAgesq7gd6-muClBXq0K2IHbKk8g-6aN"
-        )
-        reply = create_reply(image_reply, msg)
-        logger.info("image: " + str(reply))
-        return reply
+    # if "冰墩墩" in content:
+    #     image_reply = ImageReply()
+    #     image_reply.media_id = (
+    #         "CVE-AgGLEVfYepyn0TvydL3F1XLB81xelAgesq7gd6-muClBXq0K2IHbKk8g-6aN"
+    #     )
+    #     reply = create_reply(image_reply, msg)
+    #     logger.info("image: " + str(reply))
+    #     return reply
 
     reply = create_reply(result, msg)
     return reply
@@ -209,7 +209,7 @@ def map_voice_keyword_to_func(content, user):
         "news": get_news_60s,
         "history": today_in_history,
         "历史": today_in_history,
-        "冰墩墩": bingdwendwen,
+        # "冰墩墩": bingdwendwen,
     }
     for k, v in voice_keywords.items():
         if k in content.lower():
@@ -230,7 +230,7 @@ def map_text_keyword_to_func(content, user):
     keyword_action_dict = {
         "历史": {"func": today_in_history, "param": ""},
         "history": {"func": today_in_history, "param": ""},
-        "冰墩墩": {"func": bingdwendwen, "param": ""},
+        # "冰墩墩": {"func": bingdwendwen, "param": ""},
         # "泡泡": {"func": bubble, "param": ""},
         "新闻": {"func": get_news_60s, "param": ""},
         "news": {"func": get_news_60s, "param": ""},

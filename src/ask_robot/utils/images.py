@@ -26,8 +26,8 @@ def get_access_token(appid, secret):
 
 def img_upload(mediaType, name):
 
-    app_id = os.getenv('IMAGE_ID', '')
-    secret = os.getenv('IMAGE_PASSWORD', '')
+    app_id = os.getenv('app_id', '')
+    secret = os.getenv('secret', '')
     token = get_access_token(app_id, secret)
     url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=%s&type=%s" % (token, mediaType)
     img_path = '/root/code/tmp/b.png'

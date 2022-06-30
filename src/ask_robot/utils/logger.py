@@ -1,7 +1,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-LOG_FILENAME = '/opt/idlepig/logs/output.log'
+LOG_FILENAME = '/opt/idlewith/logs/output.log'
 
 logger = logging.getLogger()
 

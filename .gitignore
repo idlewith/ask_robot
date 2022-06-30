@@ -10,7 +10,7 @@ nohup.out
 push/client.py
 *.png
 *.html
-*.txt
+*news*.txt
 *.db
 *.pclprof
 config.py
@@ -18,3 +18,8 @@ test_t.py
 downloads
 downloads.tar.gz
 restart_local.sh
+send_news.py
+temp_send_news.py
+ask_robot.egg-info
+dist
+build

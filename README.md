@@ -12,12 +12,14 @@
 
 - [ ] do not need config.py, using environment in restart.sh
 
-WECHAT_TOKEN
-WECHAT_AES_KEY
-WECHAT_APPID
-PASSWORD_EMAIL
-PASSWORD_IMAGE
-PASSWORD_IMAGE_ID
+token
+app_id
+aes_key
+secret
+email_from
+password
+email_to
+
 
 - [ ] modify log path and create various path automatically
 /opt/idlepig/apps/python397
@@ -93,12 +95,16 @@ pip install -r requirements.txt
 
 you need set actual info for token, aes_key, appid
 
-if you are in plaintext mode, just set WECHAT_TOKEN is ok.
+if you are in plaintext mode, just set token is ok.
 
 ```shell
-export WECHAT_TOKEN=token
-export WECHAT_AES_KEY=aes_key
-export WECHAT_APPID=appid
+export token=''
+export app_id=''
+export aes_key=''
+export secret=''
+export email_from=''
+export password=''
+export email_to=''
 ```
 
 ```shell
@@ -155,4 +161,4 @@ nginx
 
 # logs file location
 
-/opt/idlepig/logs/output.log
+/opt/idlewith/logs/output.log
