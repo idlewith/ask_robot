@@ -10,7 +10,7 @@
 
 **others todo**
 
-- [ ] do not need config.py, using environment in restart.sh
+- [done] keyword and function map in config.py
 
 token
 app_id
@@ -108,8 +108,7 @@ export email_to=''
 ```
 
 ```shell
-chmod +x restart.sh
-./restart.sh
+sh auto.sh
 ```
 
 the http://0.0.0.0:8081 will work
