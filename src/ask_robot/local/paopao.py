@@ -10,6 +10,6 @@ def bubble():
     return "\n".join(address)
 
 
-if __name__ == "__main__":
-    a = bubble()
-    print(a)
+# if __name__ == "__main__":
+#     a = bubble()
+#     print(a)

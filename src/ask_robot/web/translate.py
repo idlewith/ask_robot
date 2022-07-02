@@ -34,7 +34,7 @@ def query(word: str) -> str:
     return chinese
 
 
-def translate(words):
+def trans(words):
     if len(words.split()) == 2:
         word = words.split()[1]
         chinese = query(word)
@@ -43,7 +43,6 @@ def translate(words):
         # Please input "translation hello"
         return '请输入 "翻译 hello"'
 
-
-if __name__ == "__main__":
-    r = translate("translate hello")
-    pprint(r)
+# if __name__ == "__main__":
+#     r = translate("translate hello")
+#     pprint(r)

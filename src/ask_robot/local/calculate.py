@@ -1,4 +1,4 @@
-from . import logger
+from ..utils import logger
 
 
 def format_output(result):
@@ -38,8 +38,7 @@ def calc(string: str, user):
     except (SyntaxError, TypeError):
         return "表达式不正确"  # expression has error
 
-
-if __name__ == "__main__":
-    # result = calc('calculate 469/6%3/8646/3%6')
-    r = calc("计算 469/6%3/8646/3%6", "")
-    print(r)
+# if __name__ == "__main__":
+#     # result = calc('calculate 469/6%3/8646/3%6')
+#     r = calc("计算 469/6%3/8646/3%6", "")
+#     print(r)

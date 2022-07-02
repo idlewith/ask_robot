@@ -17,7 +17,7 @@ app_id
 aes_key
 secret
 email_from
-password
+email_password
 email_to
 
 
@@ -103,7 +103,7 @@ export app_id=''
 export aes_key=''
 export secret=''
 export email_from=''
-export password=''
+export email_password=''
 export email_to=''
 ```
 

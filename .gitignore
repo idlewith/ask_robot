@@ -13,7 +13,6 @@ push/client.py
 *news*.txt
 *.db
 *.pclprof
-config.py
 test_t.py
 downloads
 downloads.tar.gz

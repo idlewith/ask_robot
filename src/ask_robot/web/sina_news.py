@@ -1,7 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from .basic import (
+from ..utils.basic import (
     gen_today_file_name,
     is_today_file_exist,
     read_local_file,
@@ -9,7 +9,7 @@ from .basic import (
 )
 
 
-def _get_xml():
+def get_xml():
     url_sina = "https://sina-news.vercel.app/rss.xml"
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36"
@@ -79,25 +79,24 @@ def extract(response):
     return "<br><br>".join(n)
 
 
-def get_xml():
+def get_sina_news():
     file_today = gen_today_file_name("sina-news-60s-%s.txt")
     today_file_exist = is_today_file_exist(file_today)
 
     if today_file_exist:
         data = read_local_file(file_today)
-        data = data.replace('\n', '<br>')
+        data = data.replace("\n", "<br>")
     else:
-        data = _get_xml()
+        data = get_xml()
         data = extract(data)
         if data:
             write_local_file(file_today, data)
     return data
 
+# def main():
+#     data = get_sina_news()
+#     print(data)
 
-def main():
-    data = get_xml()
-    print(data)
 
-
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

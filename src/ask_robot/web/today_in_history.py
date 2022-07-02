@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from .basic import (
+from ..utils.basic import (
     gen_today_file_name,
     is_today_file_exist,
     read_local_file,
@@ -53,8 +53,7 @@ def get_data() -> dict:
     return response
 
 
-def today_in_history():
-
+def get_today_in_history():
     file_today = gen_today_file_name("today_in_history-%s.json")
     today_file_exist = is_today_file_exist(file_today)
 
@@ -69,7 +68,6 @@ def today_in_history():
     data = format_data(data)
     return data
 
-
-if __name__ == "__main__":
-    r = today_in_history()
-    print(r)
+# if __name__ == "__main__":
+#     r = today_in_history()
+#     print(r)

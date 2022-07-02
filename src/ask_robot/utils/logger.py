@@ -3,6 +3,7 @@ from logging.handlers import RotatingFileHandler
 
 LOG_FILENAME = '/opt/idlewith/logs/output.log'
 
+
 logger = logging.getLogger()
 
 logger.setLevel(logging.DEBUG)

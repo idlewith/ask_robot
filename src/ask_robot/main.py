@@ -15,22 +15,16 @@ import os
 import xmltodict
 from flask import Flask, request, abort
 from wechatpy import parse_message, create_reply
-from wechatpy.replies import ImageReply
 from wechatpy.exceptions import (
     InvalidSignatureException,
     InvalidAppIdException,
 )
 from wechatpy.utils import check_signature, to_text
 
-from utils.bingdwendwen import bingdwendwen
-from utils.calculate import calc
-from utils.news_60s import get_news_60s
-from utils.today_in_history import today_in_history
-from utils.paopao import bubble
-from utils.translate import translate
 from utils.logger import logger
-from utils.first_message import first_message
+from local.first_message import send_first_message
 from utils.basic import get_real_name
+import config
 
 # here to set your custom token, e.g.: abcde
 TOKEN = os.getenv("token", "")
@@ -82,7 +76,7 @@ def wechat():
         # if someone subscribes, send init message
         subscribe = is_subscribe(message, message_type)
         if subscribe:
-            reply = create_reply(first_message(), msg)
+            reply = create_reply(send_first_message(), msg)
             return reply.render()
 
         if msg.type == "text":
@@ -204,13 +198,8 @@ def map_voice_keyword_to_func(content, user):
     if not content:
         return " "
 
-    voice_keywords = {
-        "新闻": get_news_60s,
-        "news": get_news_60s,
-        "history": today_in_history,
-        "历史": today_in_history,
-        # "冰墩墩": bingdwendwen,
-    }
+    voice_keywords = config.voice_keyword_func_dict
+
     for k, v in voice_keywords.items():
         if k in content.lower():
             result = v()
@@ -227,20 +216,28 @@ def map_text_keyword_to_func(content, user):
 
     keyword = content.split()[0].replace("。", "")
 
-    keyword_action_dict = {
-        "历史": {"func": today_in_history, "param": ""},
-        "history": {"func": today_in_history, "param": ""},
-        # "冰墩墩": {"func": bingdwendwen, "param": ""},
-        # "泡泡": {"func": bubble, "param": ""},
-        "新闻": {"func": get_news_60s, "param": ""},
-        "news": {"func": get_news_60s, "param": ""},
-        "翻译": {"func": translate, "param": (content,)},
-        "translate": {"func": translate, "param": (content,)},
-        "计算": {"func": calc, "param": (content, user)},
-        "calc": {"func": calc, "param": (content, user)},
-    }
+    keyword_action_dict = config.text_keyword_func_dict
+    # keyword_action_dict = {
+    #     "历史": {"func": today_in_history, "param": ""},
+    #     "history": {"func": today_in_history, "param": ""},
+    #     # "冰墩墩": {"func": bingdwendwen, "param": ""},
+    #     # "泡泡": {"func": bubble, "param": ""},
+    #     "新闻": {"func": get_news_60s, "param": ""},
+    #     "news": {"func": get_news_60s, "param": ""},
+    #     "翻译": {"func": translate, "param": (content,)},
+    #     "translate": {"func": translate, "param": (content,)},
+    #     "计算": {"func": calc, "param": (content, user)},
+    #     "calc": {"func": calc, "param": (content, user)},
+    # }
     func = keyword_action_dict.get(keyword, {}).get("func", "")
-    param = keyword_action_dict.get(keyword, {}).get("param", "")
+    param_raw = keyword_action_dict.get(keyword, {}).get("param", "")
+    if param_raw == 'content':
+        param = (content, )
+    elif param_raw == 'content,user':
+        param = (content, user)
+    else:
+        param = ''
+
     logger.info("text mode, execute function: " + str(func))
     logger.info("text mode, params: " + str(param))
 
@@ -258,5 +255,4 @@ def map_text_keyword_to_func(content, user):
     return result
 
 
-if __name__ == "__main__":
-    app.run("0.0.0.0", 8081, debug=True)
+app.run("0.0.0.0", 8081, debug=True)
