@@ -11,6 +11,7 @@ http://mmbiz.qpic.cn/mmbiz_jpg/4q4d8FsN3E15G6wPSiaqdib9bMVu6ia1W6HF9iaAiau2omq9N
 """
 
 import os
+import sys
 
 import xmltodict
 from flask import Flask, request, abort
@@ -21,10 +22,10 @@ from wechatpy.exceptions import (
 )
 from wechatpy.utils import check_signature, to_text
 
-from utils.logger import logger
-from local.first_message import send_first_message
-from utils.basic import get_real_name
-import config
+from .utils.logger import logger
+from .local.first_message import send_first_message
+from .utils.basic import get_real_name
+from . import config
 
 # here to set your custom token, e.g.: abcde
 TOKEN = os.getenv("token", "")
@@ -255,4 +256,12 @@ def map_text_keyword_to_func(content, user):
     return result
 
 
-app.run("0.0.0.0", 8081, debug=True)
+def run():
+    app.run("0.0.0.0", 8081, debug=True)
+
+
+if __name__ == '__main__':
+    try:
+        run()
+    except BrokenPipeError as exc:
+        sys.exit(exc.errno)

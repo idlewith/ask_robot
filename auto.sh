@@ -1,15 +1,29 @@
-local_package='/Users/zhouxinzheng/code/ask_robot/dist/ask_robot-0.0.1-py3-none-any.whl'
+path_root="/Users/zhouxinzheng/code/ask_robot"
+server="120.25.224.28"
+
+local_package=${path_root}'/dist/ask_robot-0.0.1-py3-none-any.whl'
+local_requirements=${path_root}'/linux-requirements.txt'
+
 server_package='/root/ask_robot-0.0.1-py3-none-any.whl'
-local_requirements='/Users/zhouxinzheng/code/ask_robot/linux-requirements.txt'
 server_requirements='/root/linux-requirements.txt'
+
 log='/opt/idlewith/logs/output.log'
 python_env='/usr/bin/python3'
 
-scp $local_package root@120.25.224.28:~/
-scp $local_requirements root@120.25.224.28:~/
+cd $path_root
+python setup.py publish
 
-ssh root@120.25.224.28 "$python_env -m pip uninstall ask-robot -y"
-ssh root@120.25.224.28 "$python_env -m pip install $server_package"
-ssh root@120.25.224.28 "$python_env -m pip install -r $server_requirements"
-ssh root@120.25.224.28 "nohup $python_env -m ask_robot.main >> $log &"
+scp ${local_package} root@$server:~/
+scp $local_requirements root@$server:~/
+
+ssh root@$server "$python_env -m pip uninstall ask-robot -y"
+ssh root@$server "$python_env -m pip install $server_package"
+ssh root@$server "$python_env -m pip install -r $server_requirements"
+
+
+ssh root@$server "netstat -lnput|grep 8081|awk -F ' ' '{print \$7}'|awk -F '/' '{print \$1}'|xargs kill -9"
+ssh root@$server "netstat -lnput|grep 8081|awk -F ' ' '{print \$7}'|awk -F '/' '{print \$1}'|xargs kill -9"
+ssh root@$server "netstat -lnput|grep 8081|awk -F ' ' '{print \$7}'|awk -F '/' '{print \$1}'|xargs kill -9"
+ssh root@$server "nohup ${python_env} -m ask_robot.main >> $log &"
+ssh root@$server "nginx -s reload"
 

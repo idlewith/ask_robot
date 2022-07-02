@@ -1,4 +1,4 @@
-from ..utils import logger
+from ..utils.logger import logger
 
 
 def format_output(result):
@@ -20,8 +20,8 @@ def has_permission(user):
 
 
 def calc(string: str, user):
-    logger.logger.info("calc string: " + str(string))
-    logger.logger.info("user: " + str(user))
+    logger.info("calc string: " + str(string))
+    logger.info("user: " + str(user))
 
     if len(string.split()) <= 1:
         return "没有表达式"  # no expression

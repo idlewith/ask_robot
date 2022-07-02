@@ -22,3 +22,6 @@ temp_send_news.py
 ask_robot.egg-info
 dist
 build
+start_server.py
+auto.sh
+restart.sh

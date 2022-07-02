@@ -1,7 +1,3 @@
-
-__all__ = ["send_first_message", ]
-
-
 def send_first_message():
     content = (
         "欢迎关注Python脚本，下面是整理的一些Python电子书。\n\n"
@@ -15,7 +11,6 @@ def send_first_message():
         "以上信息均来自互联网，仅供参考学习使用。"
     )
     return content
-
 
 # if __name__ == "__main__":
 #     a = first_message()

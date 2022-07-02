@@ -1,8 +1,8 @@
-from local.calculate import calc
-from web.news_60s import get_news_60s
-from web.sina_news import get_sina_news
-from web.translate import trans
-from web.today_in_history import get_today_in_history
+from .local.calculate import calc
+from .web.news_60s import get_news_60s
+from .web.sina_news import get_sina_news
+from .web.translate import trans
+from .web.today_in_history import get_today_in_history
 
 
 voice_keyword_func_dict = {
