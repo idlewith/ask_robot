@@ -1,24 +1,18 @@
-from .local.calculate import calc
-from .web.news_60s import get_news_60s
-from .web.sina_news import get_sina_news
-from .web.translate import trans
-from .web.today_in_history import get_today_in_history
+import os
+import pathlib
+
+data_path_name = 'data'
+log_path_name = 'log'
 
 
-voice_keyword_func_dict = {
-    "新闻": get_news_60s,
-    "news": get_news_60s,
-    "history": get_today_in_history,
-    "历史": get_today_in_history,
-}
+def gen_current_path(path_name, filename):
+    cwd = pathlib.Path.cwd()
+    data_path = os.path.join(cwd, path_name)
+    if not os.path.exists(data_path):
+        os.mkdir(data_path)
 
-text_keyword_func_dict = {
-    "历史": {"func": get_today_in_history, "param": ""},
-    "history": {"func": get_today_in_history, "param": ""},
-    "新闻": {"func": get_news_60s, "param": ""},
-    "news": {"func": get_news_60s, "param": ""},
-    "翻译": {"func": trans, "param": "content"},
-    "translate": {"func": trans, "param": "content"},
-    "计算": {"func": calc, "param": "content,user"},
-    "calc": {"func": calc, "param": "content,user"},
-}
+    file_path = os.path.join(data_path, filename)
+    return file_path
+
+
+log_path = gen_current_path('log', 'output.log')

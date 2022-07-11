@@ -1,7 +1,9 @@
 import json
 import os
+import pathlib
 from datetime import datetime
 from typing import Union, Any
+from .. import config
 
 
 def get_real_name(user_id):
@@ -22,6 +24,7 @@ def read_local_file(file_today: str) -> Union[str, Any]:
     Returns:
         python dict for json data
     """
+    file_today = config.gen_current_path(config.data_path_name, file_today)
     if file_today.endswith("json"):
         data = json.load(open(file_today, encoding="utf-8"))
         return data
@@ -40,6 +43,7 @@ def write_local_file(file_today: str, data) -> None:
         file_today: today json filename
         data: json data
     """
+    file_today = config.gen_current_path(config.data_path_name, file_today)
     if file_today.endswith("json"):
         json.dump(data, open(file_today, "w", encoding="utf-8"))
 
@@ -58,6 +62,8 @@ def is_today_file_exist(file_today: str) -> bool:
     Returns:
         whether file exist
     """
+
+    file_today = config.gen_current_path(config.data_path_name, file_today)
     return os.path.exists(file_today)
 
 

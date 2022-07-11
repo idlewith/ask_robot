@@ -25,7 +25,7 @@ from wechatpy.utils import check_signature, to_text
 from .utils.logger import logger
 from .local.first_message import send_first_message
 # from .utils.basic import get_real_name
-from . import config
+from . import func_config
 
 # here to set your custom token, e.g.: abcde
 TOKEN = os.getenv("token", "")
@@ -201,7 +201,7 @@ def map_voice_keyword_to_func(content, user):
     if not content:
         return " "
 
-    voice_keywords = config.voice_keyword_func_dict
+    voice_keywords = func_config.voice_keyword_func_dict
 
     for k, v in voice_keywords.items():
         if k in content.lower():
@@ -219,7 +219,7 @@ def map_text_keyword_to_func(content, user):
 
     keyword = content.split()[0].replace("。", "")
 
-    keyword_action_dict = config.text_keyword_func_dict
+    keyword_action_dict = func_config.text_keyword_func_dict
     # keyword_action_dict = {
     #     "历史": {"func": today_in_history, "param": ""},
     #     "history": {"func": today_in_history, "param": ""},
