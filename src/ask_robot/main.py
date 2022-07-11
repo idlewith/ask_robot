@@ -24,7 +24,7 @@ from wechatpy.utils import check_signature, to_text
 
 from .utils.logger import logger
 from .local.first_message import send_first_message
-from .utils.basic import get_real_name
+# from .utils.basic import get_real_name
 from . import config
 
 # here to set your custom token, e.g.: abcde
@@ -82,7 +82,8 @@ def wechat():
 
         if msg.type == "text":
             reply = reply_text_msg(msg, from_user_name)
-            username = get_real_name(from_user_name)
+            # username = get_real_name(from_user_name)
+            username = ''
             msg_strip = str(msg).strip()
             for keyword_chinese in KEYWORD_CHINESE:
                 if keyword_chinese in msg_strip:
@@ -98,7 +99,8 @@ def wechat():
             message = xmltodict.parse(to_text(request.data))["xml"]
             recognition = message["Recognition"]
             msg_strip = str(recognition).strip()
-            username = get_real_name(from_user_name)
+            # username = get_real_name(from_user_name)
+            username = ''
             logger.info("Recognition: " + msg_strip)
 
             for keyword_chinese in KEYWORD_CHINESE:
