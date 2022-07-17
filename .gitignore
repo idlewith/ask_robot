@@ -25,4 +25,3 @@ build
 start_server.py
 auto.sh
 restart.sh
-data/
