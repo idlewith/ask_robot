@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ask_robot"
-version = "0.0.3"
+version = "0.0.4"
 description = "the robot for chat system"
 authors = ["idlewith <newellzhou@163.com>"]
 license = "MIT"
